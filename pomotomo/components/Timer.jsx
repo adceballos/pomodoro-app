@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { Audio } from 'expo-av';
 
 const Timer = () => {
   const [timeLeft, setTimeLeft] = useState(10); // state to track time passed
@@ -11,6 +12,21 @@ const Timer = () => {
   const [focusPhaseCount, setFocusPhaseCount] = useState(0); // Focus phases completed
   const [isAutoPlayEnabled, setIsAutoPlayEnabled] = useState(false); // Auto-play toggle
   const intervalRef = useRef(null); // Ref to hold the interval ID
+  const [sound, setSound] = useState(null); // State to store sound instance
+
+ // Load the sound file
+ async function playSound() {
+  const { sound } = await Audio.Sound.createAsync(
+    require('../assets/boom.mp3') // Ensure this path is correct
+  );
+  setSound(sound);
+  await sound.playAsync();  // Play the sound
+}
+
+// Unload the sound when the component unmounts
+useEffect(() => {
+  return sound ? () => { sound.unloadAsync(); } : undefined;
+}, [sound]);
 
   useEffect(() => {
     let interval = null;
@@ -22,6 +38,7 @@ const Timer = () => {
     }
     else if (timeLeft === 0) {
       setIsActive(false);
+      playSound();  // Play the sound when timer hits 0
       if (isWorkPhase) {
         // Switch to break phase and update tomato count
         const isFourthPhase = (focusPhaseCount + 1) % 4 === 0;
