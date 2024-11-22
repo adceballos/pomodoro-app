@@ -63,6 +63,18 @@ export default function TabLayout() {
           ),
         }}
       />
+
+      <Tabs.Screen
+        name="ToDo" // No need to import ToDo directly, expo-router handles it automatically
+        options={{
+          title: '',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'list-circle' : 'list-circle-outline'} color={color} />
+          ),
+        }}
+      />
+
+
       <Tabs.Screen
         name="Profile"
         options={{
